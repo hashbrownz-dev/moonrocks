@@ -1,6 +1,6 @@
 // KEYBOARD
 
-const trackKeys = (keys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' ','z']) => {
+const trackKeys = (keys = ['d', 'f', 'j', 'k']) => {
     let down = Object.create(null);
     const track = (event) => {
         if(keys.includes(event.key)){

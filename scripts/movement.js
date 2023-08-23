@@ -51,6 +51,19 @@ const getDistance = (p1, p2) => {
     return Math.sqrt((a*a)+(b*b))
 }
 
+// GET DESTINATION
+
+const getDestination = (speed, direction) => {
+    // Convert direction to radians
+    const theta = degToRad(direction);
+
+    // return new coordinates
+    return {
+        x : speed * Math.cos(theta),
+        y : speed * Math.sin(theta),
+    }
+}
+
 // MOVE ACTOR
 
 const moveActor = (actor) => {
