@@ -1,7 +1,7 @@
 class Game {
     constructor(){
         this.player = new Player();
-        this.actors = [];
+        this.actors = [new MoonRock(), new MoonRock(), new MoonRock()];
         this.projectiles = [];
         this.score = 0;
     }
@@ -21,9 +21,10 @@ class Game {
 
     }
     draw(){
-        // DRAW ACTORS
         // DRAW PLAYER
         if(this.player)this.player.draw();
+        // DRAW ACTORS
+        this.actors.forEach( actor => actor.draw() );
         // DRAW PROJECTILES
         this.projectiles.forEach( proj => proj.draw() );
     }
