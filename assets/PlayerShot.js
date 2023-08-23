@@ -1,0 +1,1 @@
+const PlayerShot = {"dimensions":{"drawW":"6","drawH":"6"},"col":[{"type":"circ","x":3,"y":3,"r":3}],"palette":["#FFFF00"],"layers":[{"name":"Layer_1","shapes":[{"type":"circ","x":3,"y":3,"r":3,"fill":"#FFFF00"}]}]};

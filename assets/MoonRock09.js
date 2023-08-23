@@ -1,0 +1,1 @@
+const MoonRock09 = {"dimensions":{"drawW":"16","drawH":"16"},"col":[{"type":"circ","x":8,"y":8,"r":7}],"palette":["#000000","#00FFFF"],"layers":[{"name":"Layer_1","shapes":[{"type":"polygon","points":[{"x":6.6,"y":0},{"x":0,"y":8},{"x":2,"y":12.4},{"x":8,"y":16},{"x":12.6,"y":14.7},{"x":16,"y":3.8},{"x":10.5,"y":3.5}],"fill":"#000000","stroke":"#00FFFF"}]}]};

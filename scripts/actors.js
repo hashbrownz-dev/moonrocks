@@ -36,6 +36,12 @@ class Actor {
     get isOutOfBounds(){
         return ( this.x + (this.drawW/2) < 0 || this.x > 640 + (this.drawW/2) || this.y + (this.drawH/2) < 0 || this.y > 360 + (this.drawH/2) )
     }
+    wrap(){
+        if(this.y > 360) this.y = -this.drawH;
+        if(this.y < -this.drawH) this.y = 360;
+        if(this.x > 640) this.x = -this.drawW;
+        if(this.x < -this.drawW) this.x = 640;
+    }
     update(game){
 
     }

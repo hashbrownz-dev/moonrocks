@@ -330,7 +330,10 @@ const renderSprite = (sprite, x = 0, y = 0, options = {}) => {
                 } else {
                     ctx.strokeStyle = shape.stroke;
                 }
+                // Blur effects only work with Hardware Acceleration Available
+                // ctx.filter = `drop-shadow(0px 0px 3px ${shape.stroke})`
                 path ? ctx.stroke(path) : ctx.stroke();
+                // ctx.filter = `none`
             }
         }
 
