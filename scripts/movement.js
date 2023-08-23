@@ -179,6 +179,26 @@ class Line{
     }
 }
 
+class Poly{
+    constructor(x,y,tethers,dir){
+        // add player dir to each tether...
+        this.tethers = tethers.map( tether => {
+            return {
+                l : tether.l,
+                a : tether.a + dir
+            }
+        })
+        this.points = [];
+        this.tethers.forEach( tether => {
+            this.points.push(getDestination(tether.l, tether.a));
+        })
+        this.points.forEach( point => {
+            point.x += x;
+            point.y += y;
+        })
+    }
+}
+
 //////////////////////
 //  COLLISION TYPES //
 //////////////////////

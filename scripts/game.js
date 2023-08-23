@@ -23,6 +23,12 @@ class Game {
     draw(){
         // DRAW PLAYER
         if(this.player)this.player.draw();
+        // DRAW PLAYER COL
+        if(this.player){
+            ctx.strokeStyle = 'red';
+            drawPolygon(this.player.colShapes[0]);
+            ctx.stroke();
+        }
         // DRAW ACTORS
         this.actors.forEach( actor => actor.draw() );
         // DRAW PROJECTILES

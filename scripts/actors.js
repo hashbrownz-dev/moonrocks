@@ -30,6 +30,8 @@ class Actor {
                     return new Rect(this.drawX + Number(shape.x),this.drawY + Number(shape.y),Number(shape.w),Number(shape.h));
                 case 'line':
                     return new Line(this.drawX + Number(shape.x1),this.drawY + Number(shape.y1),this.drawX + Number(shape.x2),this.drawY + Number(shape.y2));
+                case 'polygon':
+                    return new Poly(this.x,this.y,shape.tethers,this.dir);
             }
         })
     }
