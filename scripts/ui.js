@@ -64,14 +64,13 @@ const drawHUD = (game) => {
 
     // DRAW HI SCORE
     ctx.textAlign = 'right';
-    ctx.fillText('000000', 630, 35);
+    let hiScoreText = game ? String(game.hiScore).padStart(6,'0') : String(getHiScore()).padStart(6,'0');
+    ctx.fillText(hiScoreText, 630, 35);
 
     // DRAW LIVES
     if(game && game.lives > 0){
         drawLives(game.lives);
     }
-    // renderSprite(LifeIcon,274,28);
-    // renderSprite(LifeIcon,293,28);
 }
 
 const drawLives = (amount) => {

@@ -1,6 +1,8 @@
 class Game {
     constructor(){
         this.score = 0;
+        this.hiScore = getHiScore();
+        this.newHiScore = false;
         this.lives = 5;
         this.level = 1;
         this.player = new Player();
@@ -18,6 +20,7 @@ class Game {
     }
     reset(){
         this.score = 0;
+        this.newHiScore = false;
         this.lives = 5;
         this.level = 1;
         this.player = new Player();
@@ -46,6 +49,14 @@ class Game {
         if(this.actors.length === 0){
             this.level++;
             this.actors = MoonRock.spawn(2+this.level);
+        }
+
+        // SCORE CHECK
+        if(this.score > this.hiScore) this.newHiScore = true;
+        if(this.newHiScore) this.hiScore = this.score;
+        if(this.gameOver && this.newHiScore){
+            setHiScore(this.score);
+            this.newHiScore = false;
         }
 
         // RESET
