@@ -38,6 +38,8 @@ const main = () => {
 
         // DRAW HUD
 
+        drawHUD(_Game);
+
         // RESET TRANSFORMATION
         ctx.resetTransform();
 
@@ -48,5 +50,5 @@ const main = () => {
 }
 
 // Set Initial Screen Resolution
-resizeCanvas(1024);
+fitToWindow();
 main();

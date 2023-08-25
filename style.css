@@ -4,3 +4,12 @@
     font-family: 'Orbitron';
     src: url('assets/Fonts/Orbitron-VariableFont_wght.ttf');
 }
+
+html, body{
+    margin:0;
+}
+
+#viewport{
+    display:block;
+    margin: 0 auto;
+}

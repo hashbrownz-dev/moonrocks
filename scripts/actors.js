@@ -72,6 +72,7 @@ class MoonRock extends Actor{
         this.dir = getRandom(0,359);
         this.spinDir = Math.round(Math.random()) ? -0.1 : 0.1;
         this.hp = 3;
+        this.points = 25;
     }
     static spawn(amount = 3){
         const output = [];
@@ -96,8 +97,10 @@ class MoonRock extends Actor{
             if(colCirc(this.colShapes[0],projectile.colShapes[0])){
                 projectile.clear = true;
                 this.hp -= projectile.power;
+                game.score+=5;
                 if(this.hp <= 0) {
                     this.clear = true;
+                    game.score+=this.points - 15;
                     game.actors.push(new MoonRockMed(this), new MoonRockMed(this))
                 }
             }
@@ -120,6 +123,7 @@ class MoonRockMed extends Actor{
         this.dir = getRandom(0,359);
         this.spinDir = Math.round(Math.random()) ? -0.2 : 0.2;
         this.hp = 2;
+        this.points = 50;
     }
     update(game){
         // ROTATE
@@ -136,8 +140,10 @@ class MoonRockMed extends Actor{
             if(colCirc(this.colShapes[0],projectile.colShapes[0])){
                 projectile.clear = true;
                 this.hp -= projectile.power;
+                game.score += 5;
                 if(this.hp <= 0) {
                     this.clear = true;
+                    game.score += this.points - 10;
                     game.actors.push(new MoonRockSmall(this), new MoonRockSmall(this));
                 }
             }
@@ -160,6 +166,7 @@ class MoonRockSmall extends Actor{
         this.dir = getRandom(0,359);
         this.spinDir = Math.round(Math.random()) ? -0.4 : 0.4;
         this.hp = 1;
+        this.points = 100;
     }
     update(game){
         // ROTATE
@@ -178,6 +185,7 @@ class MoonRockSmall extends Actor{
                 this.hp -= projectile.power;
                 if(this.hp <= 0) {
                     this.clear = true;
+                    game.score += this.points;
                 }
             }
         })

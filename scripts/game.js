@@ -1,13 +1,28 @@
 class Game {
     constructor(){
         this.score = 0;
-        this.lives = 3;
+        this.lives = 5;
         this.level = 1;
         this.player = new Player();
         this.actors = MoonRock.spawn();
         this.projectiles = [];
         // DEBUG
         this.showColShapes = false;
+    }
+    get gameOver(){
+        return this.lives < 0;
+    }
+    getWave(){
+        // if(this.gameOver) return 'GAME OVER';
+        return `WAVE ${String(this.level).padStart(2,'0')}`;
+    }
+    reset(){
+        this.score = 0;
+        this.lives = 5;
+        this.level = 1;
+        this.player = new Player();
+        this.actors = MoonRock.spawn();
+        this.projectiles = [];
     }
     update(keyboard){
         // UPDATE ACTORS
@@ -24,7 +39,7 @@ class Game {
             this.player = this.player.clear ? undefined : this.player;   
         } else {
             this.lives --;
-            this.player = new Player();
+            if(this.lives >= 0) this.player = new Player();
         }
         this.actors = this.actors.filter( (actor) => !actor.clear );
         this.projectiles = this.projectiles.filter( (proj) => !proj.clear );
@@ -32,7 +47,11 @@ class Game {
             this.level++;
             this.actors = MoonRock.spawn(2+this.level);
         }
+
+        // RESET
+        if(this.gameOver && keyboard['j']) this.reset();
     }
+    
     draw(){
         // DRAW PLAYER
         if(this.player)this.player.draw();
@@ -40,6 +59,13 @@ class Game {
         this.actors.forEach( actor => actor.draw() );
         // DRAW PROJECTILES
         this.projectiles.forEach( proj => proj.draw() );
+        if(this.gameOver){
+            // DRAW GAME OVER
+            ctx.font = `300 18px Orbitron, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.fillStyle = 'white';
+            ctx.fillText('GAME OVER', 320, 180);
+        }
         // DRAW COL SHAPES
         if(this.showColShapes){
             // Player
