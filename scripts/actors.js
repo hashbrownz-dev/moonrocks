@@ -73,6 +73,13 @@ class MoonRock extends Actor{
         this.spinDir = Math.round(Math.random()) ? -0.1 : 0.1;
         this.hp = 3;
     }
+    static spawn(amount = 3){
+        const output = [];
+        for(let i = amount; i > 0; i--){
+            output.push(new MoonRock());
+        }
+        return output;
+    }
     update(game){
         // ROTATE
         this.dir+=this.spinDir;
@@ -83,6 +90,7 @@ class MoonRock extends Actor{
         // WRAP
         this.wrap();
         // COLLISIONS
+        // Projectiles
         game.projectiles.forEach( (projectile) => {
             // check for projectile collision
             if(colCirc(this.colShapes[0],projectile.colShapes[0])){

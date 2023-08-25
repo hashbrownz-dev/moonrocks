@@ -9,6 +9,28 @@ class Player extends Actor{
         this.thruster = 0.1;
         this.shotCooldown = 20;
     }
+    getNewPos(){
+        // CALCULATE SPEED
+
+        let nx = this.x + this.xSpeed, ny = this.y + this.ySpeed;
+        let speed = getDistance( { x:this.x, y:this.y }, { x:nx, y:ny } ),
+            trajectory = getDirection( { x:this.x, y:this.y }, { x:nx, y:ny });
+
+        // UPDATE POSITION
+
+        if(speed > 5){
+            const coords = getDestination(5, trajectory);
+            return {
+                x : this.x + coords.x,
+                y : this.y + coords.y
+            }
+        } else {
+            return {
+                x : nx,
+                y : ny,
+            }
+        }
+    }
     update(input, game){
         // GET PLAYER INPUT
         if(input['a']) this.dir -= 2;
@@ -32,23 +54,26 @@ class Player extends Actor{
             if(this.ySpeed < -5) this.ySpeed = -5;
         }
 
-        // CALCULATE SPEED
+        // UPDATE POS
+        const curPos = {x:this.x, y:this.y};
+        const newPos = this.getNewPos();
 
-        let nx = this.x + this.xSpeed, ny = this.y + this.ySpeed;
-        let speed = getDistance( { x:this.x, y:this.y }, { x:nx, y:ny } ),
-            trajectory = getDirection( { x:this.x, y:this.y }, { x:nx, y:ny });
+        this.x = newPos.x;
+        this.y = newPos.y;
 
-
-        // UPDATE POSITION
-
-        if(speed > 5){
-            const coords = getDestination(5, trajectory);
-            this.x += coords.x;
-            this.y += coords.y;
-        } else {
-            this.x = nx;
-            this.y = ny;
-        }
+        // COLLISION CHECK
+        game.actors.forEach( actor => {
+            if(colPolyCirc(this.colShapes[0], actor.colShapes[0])){
+                this.xSpeed *= -0.7;
+                this.ySPeed *= -0.7;
+                this.x = curPos.x;
+                this.y = curPos.y;
+                const modPos = this.getNewPos();
+                this.x = modPos.x;
+                this.y = modPos.y;
+                this.clear = true;
+            }
+        })
 
         // DISPLAY SPEED
 

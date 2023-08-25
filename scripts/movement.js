@@ -196,6 +196,7 @@ class Poly{
             point.x += x;
             point.y += y;
         })
+        this.type = 'polygon';
     }
 }
 
@@ -328,6 +329,38 @@ const colLineRect = (line, rect) => {
     } else {
         return false;
     }
+}
+
+// POLY X LINE
+
+const colPolyPoint = (polygon, point) => {
+    // SET BOOL VAR
+    let collision = false;
+    // LOOP THROUGH POLYGON POINTS
+    for( let i = 0; i < polygon.points.length; i++ ){
+        const cp = polygon.points[i];
+        const np = i === polygon.points.length - 1 ? polygon.points[0] : polygon.points[i+1];
+
+        if( ((cp.y >= point.y && np.y < point.y) || (cp.y < point.y && np.y >= point.y)) && (point.x < (np.x - cp.x) * (point.y - cp.y) / (np.y - cp.y) + cp.x)){
+            collision = !collision;
+        }
+    }
+    return collision;
+}
+
+// POLY X CIRCLE
+
+const colPolyCirc = (polygon, circle) => {
+    // SET BOOL VAR
+    let collision = false;
+    // LOOP THROUGH POLYGON POINTS
+    for( let i = 0; i < polygon.points.length; i++ ){
+        const p1 = polygon.points[i], p2 = i === polygon.points.length - 1 ? polygon.points[0] : polygon.points[i+1];
+        if(colCircLine(circle, new Line(p1.x,p1.y,p2.x,p2.y))){
+            collision = true;
+        }
+    }
+    return collision;
 }
 
 // PHYSICS PARAMS
