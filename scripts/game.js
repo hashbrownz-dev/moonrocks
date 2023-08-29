@@ -8,6 +8,7 @@ class Game {
         this.player = new Player();
         this.actors = MoonRock.spawn();
         this.projectiles = [];
+        this.collectibles = [];
         // DEBUG
         this.showColShapes = false;
     }
@@ -26,12 +27,15 @@ class Game {
         this.player = new Player();
         this.actors = MoonRock.spawn();
         this.projectiles = [];
+        this.collectibles = [];
     }
     update(keyboard){
         // UPDATE ACTORS
         this.actors.forEach( (actor) => actor.update(this) );
         // UPDATE PROJECTILES
         this.projectiles.forEach( (proj) => proj.update(this) );
+        // UPDATE COLLECTIBLES
+        this.collectibles.forEach( c => c.update(this) );
         // UPDATE PLAYER
         if(this.player){
             this.player.update(keyboard, this);
@@ -45,7 +49,8 @@ class Game {
             if(this.lives >= 0) this.player = new Player();
         }
         this.actors = this.actors.filter( (actor) => !actor.clear );
-        this.projectiles = this.projectiles.filter( (proj) => !proj.clear );
+        this.projectiles = this.projectiles.filter( p => !p.clear );
+        this.collectibles = this.collectibles.filter( c => !c.clear);
         if(this.actors.length === 0){
             this.level++;
             this.actors = MoonRock.spawn(2+this.level);
@@ -68,6 +73,8 @@ class Game {
         if(this.player)this.player.draw();
         // DRAW ACTORS
         this.actors.forEach( actor => actor.draw() );
+        // DRAW COLLECTIBLES
+        this.collectibles.forEach( c => c.draw() );
         // DRAW PROJECTILES
         this.projectiles.forEach( proj => proj.draw() );
         if(this.gameOver){

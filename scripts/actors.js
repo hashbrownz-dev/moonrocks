@@ -202,6 +202,7 @@ class MoonRockSmall extends Actor{
                 if(this.hp <= 0) {
                     this.clear = true;
                     game.score += this.points;
+                    game.collectibles.push(new CollectStar(this.x,this.y,this.trajectory,this.speed));
                 }
             }
         })
@@ -268,6 +269,7 @@ class UFO extends Actor {
                 if(this.hp <= 0){
                     this.clear = true;
                     game.score += this.points;
+                    game.collectibles.push(new CollectStar(this.x,this.y));
                 }
             }
         })

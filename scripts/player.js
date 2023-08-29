@@ -125,3 +125,36 @@ class PShot extends Actor {
         this.wrap();
     }
 }
+
+class CollectStar extends Actor{
+    constructor(x,y,dir,speed){
+        super(Star);
+        this.x = x;
+        this.y = y;
+        this.dir = dir;
+        this.speed = speed;
+        this.decay = 600;
+    }
+    update(game){
+        // DECAY
+        this.decay--;
+        if(this.decay <= 0) this.clear = true;
+        // UPDATE POSITION
+        if(this.speed !== 0.1) this.speed -= 0.05;
+        if(this.speed < 0.1) this.speed = 0.1;
+        moveActor(this);
+        this.wrap();
+        // COLLISION CHECK
+        if(game.player){
+            const p = game.player;
+            if(colPolyCirc(p.colShapes[0], this.colShapes[0])){
+                this.clear = true;
+                // GET GAME MODE
+                game.score += 100;
+            }
+        }
+    }
+    draw(){
+        renderSprite(this.sprite, this.drawX, this.drawY);
+    }
+}
