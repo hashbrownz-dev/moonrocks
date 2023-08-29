@@ -73,6 +73,7 @@ class MoonRock extends Actor{
         this.spinDir = Math.round(Math.random()) ? -0.1 : 0.1;
         this.hp = 3;
         this.points = 25;
+        this.type = 'rock';
     }
     static spawn(amount = 3){
         const output = [];
@@ -82,6 +83,11 @@ class MoonRock extends Actor{
         return output;
     }
     update(game){
+        if(this.hp <= 0) {
+            this.clear = true;
+            game.actors.push(new MoonRockMed(this), new MoonRockMed(this))
+            return;
+        }
         // ROTATE
         this.dir+=this.spinDir;
         // MOVE
@@ -124,8 +130,14 @@ class MoonRockMed extends Actor{
         this.spinDir = Math.round(Math.random()) ? -0.2 : 0.2;
         this.hp = 2;
         this.points = 50;
+        this.type = 'rock';
     }
     update(game){
+        if(this.hp <= 0){
+            this.clear = true;
+            game.actors.push(new MoonRockSmall(this), new MoonRockSmall(this));
+            return;
+        }
         // ROTATE
         this.dir+=this.spinDir;
         // MOVE
@@ -143,8 +155,8 @@ class MoonRockMed extends Actor{
                 game.score += 5;
                 if(this.hp <= 0) {
                     this.clear = true;
-                    game.score += this.points - 10;
                     game.actors.push(new MoonRockSmall(this), new MoonRockSmall(this));
+                    game.score += this.points - 10;
                 }
             }
         })
@@ -167,8 +179,12 @@ class MoonRockSmall extends Actor{
         this.spinDir = Math.round(Math.random()) ? -0.4 : 0.4;
         this.hp = 1;
         this.points = 100;
+        this.type = 'rock';
     }
     update(game){
+        if(this.hp <= 0) {
+            this.clear = true;
+        }
         // ROTATE
         this.dir+=this.spinDir;
         // MOVE
@@ -189,5 +205,107 @@ class MoonRockSmall extends Actor{
                 }
             }
         })
+    }
+}
+
+class UFO extends Actor {
+    constructor(){
+        super(Saucer);
+        const left = coinToss();
+        this.x = left ? -this.drawW : 640 + this.drawW;
+        this.y = getRandom(60,300);
+        this.xSpeed = getRandom(1,2);
+        if(!left) this.xSpeed =- this.xSpeed;
+        this.ySpeed = 0;
+        this.hp = 2;
+        this.points = 200;
+        this.toShoot = getRandom(120,240);
+        this.type = 'ufo';
+        this.nearest = undefined;
+    }
+    getNearest(game){
+        // GET THE NEAREST TARGET
+        // AIM AND FIRE!!!
+        const targets = game.actors.filter( actor => actor != this );
+        if(game.player) targets.push(game.player);
+        // GET THE NEAREST...
+        this.nearest = targets[0];
+        for( let i = 1; i < targets.length; i++ ){
+            let nd = getDistance( { x:this.x, y:this.y }, { x: this.nearest.x, y: this.nearest.y } );
+            let td = getDistance( { x:this.x, y:this.y }, { x:targets[i].x, y:targets[i].y } );
+            if( td < nd )this.nearest = targets[i];
+        }
+    }
+    update(game){
+        if(!this.nearest) this.getNearest(game);
+        // UPDATE X POS
+        this.x += this.xSpeed;
+        // CHECK BOUNDARIES
+        if(this.xSpeed > 0){
+            if(this.x > 640 + this.drawW) this.clear = true;
+        } else {
+            if(this.x < -this.drawW) this.clear = true;
+        }
+        // UPDATE Y POS
+        // SHOOT
+        this.toShoot--;
+        
+        if( this.toShoot <= 0 ){
+            // RESET TO SHOOT
+            this.toShoot = getRandom(120,240);
+            // GET NEAREST
+            this.getNearest(game);
+            // SHOOT
+            const dir = getDirection(this, this.nearest);
+            game.projectiles.push(new UFOShot(this.x,this.y,dir));
+        }
+        // COLLISIONS
+        const projs = game.projectiles.filter( p => p.type != 'ufo');
+        projs.forEach( (proj) => {
+            if(colPolyCirc(this.colShapes[0], proj.colShapes[0])){
+                proj.clear = true;
+                this.hp -= proj.power;
+                if(this.hp <= 0){
+                    this.clear = true;
+                    game.score += this.points;
+                }
+            }
+        })
+
+        const rocks = game.actors.filter( a => a.type === 'rock');
+        rocks.forEach( rock => {
+            if(colPolyCirc(this.colShapes[0], rock.colShapes[0])){
+                rock.hp = 0;
+                this.clear = true;
+            }
+        })
+    }
+    draw(){
+        renderSprite(this.sprite, this.drawX, this.drawY);
+
+        // DRAW LINE TO NEAREST TARGET
+        if(this.nearest){
+            ctx.strokeStyle = '#ff00cc';
+            ctx.beginPath();
+            ctx.moveTo(this.x,this.y);
+            ctx.lineTo(this.nearest.x,this.nearest.y);
+            ctx.stroke();
+        }
+    }
+}
+
+class UFOShot extends Actor{
+    constructor(x,y,dir){
+        super(UFOProj);
+        this.x = x;
+        this.y = y;
+        this.dir = dir;
+        this.speed = 4;
+        this.power = 3;
+        this.type = 'ufo';
+    }
+    update(game){
+        moveActor(this);
+        if(this.isOutOfBounds) this.clear = true;
     }
 }

@@ -1,0 +1,1 @@
+const UFOProj = {"dimensions":{"drawW":"6","drawH":"6"},"col":[{"type":"circ","x":3,"y":3,"r":3}],"palette":["#FF00CC"],"layers":[{"name":"Layer_1","shapes":[{"type":"circ","x":3,"y":3,"r":3,"fill":"#FF00CC"}]}]};

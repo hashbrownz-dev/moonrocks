@@ -74,6 +74,15 @@ class Player extends Actor{
                 this.clear = true;
             }
         })
+        const projs = game.projectiles.filter( p => p.type === 'ufo' );
+        if(projs.length){
+            projs.forEach( proj => {
+                if(colPolyCirc(this.colShapes[0],proj.colShapes[0])){
+                    proj.clear = true;
+                    this.clear = true;
+                }
+            })
+        }
 
         // DISPLAY SPEED
 
@@ -81,9 +90,6 @@ class Player extends Actor{
         this.wrap();
 
         // LASERS
-        // based on the direction of the ship...
-        // we can find the x,y coordinates of the ships tip
-        // which is basically a distance of 12 from the center...
         this.shotCooldown--;
         if(input['k'] && this.shotCooldown <= 0){
             const offset = getDestination(12,this.dir);
