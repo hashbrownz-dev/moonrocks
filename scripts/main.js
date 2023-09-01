@@ -1,6 +1,6 @@
 const _Keyboard = trackKeys();
 
-let _Game, _State = 'play';
+let _Game, _State = 'title', _Menu = new Title();
 
 const main = () => {
     let previousTime;
@@ -26,10 +26,33 @@ const main = () => {
         // Get State
 
         switch(_State.toLowerCase()){
+            case 'title':
+                if(!_Menu) _Menu = new Title();
+                _Menu.draw();
+                break;
             case 'play':
-                if(!_Game)_Game = new Game();
+                if(!_Game || _Game.gameOverTimer <= 0){
+                    _Game = new Game();
+                }
                 _Game.update(_Keyboard);
                 _Game.draw();
+                break;
+            case 'options':
+                console.log('OPTIONS');
+                break;
+            case 'game over':
+                if(!_Menu) _Menu = new GameOver();
+                _Game.update(_Keyboard);
+                _Game.draw();
+                _Menu.draw(_Game.score);
+                break;
+            case 'reset':
+                if(_Game) _Game.reset();
+                _State = 'play';
+                break;
+            case 'pause':
+                if(!_Menu) _Menu = new Pause();
+                _Menu.draw();
                 break;
             default:
                 console.log('Oops!');
@@ -51,4 +74,6 @@ const main = () => {
 
 // Set Initial Screen Resolution
 fitToWindow();
+// ADD MENU EVENT LISTENER
+window.addEventListener('keydown', updateMenu);
 main();

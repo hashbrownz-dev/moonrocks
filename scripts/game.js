@@ -9,11 +9,9 @@ class Game {
         this.actors = MoonRock.spawn();
         this.projectiles = [];
         this.collectibles = [];
+        this.gameOver = false;
         // DEBUG
         this.showColShapes = false;
-    }
-    get gameOver(){
-        return this.lives < 0;
     }
     getWave(){
         // if(this.gameOver) return 'GAME OVER';
@@ -28,8 +26,14 @@ class Game {
         this.actors = MoonRock.spawn();
         this.projectiles = [];
         this.collectibles = [];
+        this.gameOver = false;
+        this.gameOverTimer = 300;
     }
     update(keyboard){
+        if(keyboard[' ']){
+            _State = 'pause';
+            return;
+        }
         // UPDATE ACTORS
         this.actors.forEach( (actor) => actor.update(this) );
         // UPDATE PROJECTILES
@@ -46,7 +50,12 @@ class Game {
             this.player = this.player.clear ? undefined : this.player;   
         } else {
             this.lives --;
-            if(this.lives >= 0) this.player = new Player();
+            if(this.lives >= 0) {
+                this.player = new Player();
+            } else if(!this.gameOver) {
+                this.gameOver = true;
+                this.gameOverTimer = 300;
+            }
         }
         this.actors = this.actors.filter( (actor) => !actor.clear );
         this.projectiles = this.projectiles.filter( p => !p.clear );
@@ -65,7 +74,10 @@ class Game {
         }
 
         // RESET
-        if(this.gameOver && keyboard['j']) this.reset();
+        if(this.gameOver){
+            this.gameOverTimer--;
+            if(this.gameOverTimer <= 0) _State = 'game over';
+        }
     }
     
     draw(){
@@ -77,7 +89,7 @@ class Game {
         this.collectibles.forEach( c => c.draw() );
         // DRAW PROJECTILES
         this.projectiles.forEach( proj => proj.draw() );
-        if(this.gameOver){
+        if(this.gameOver && this.gameOverTimer > 0){
             // DRAW GAME OVER
             ctx.font = `300 18px Orbitron, sans-serif`;
             ctx.textAlign = 'center';

@@ -87,3 +87,203 @@ const drawLives = (amount) => {
         }
     }
 }
+
+// TITLE
+
+const updateMenu = (event) => {
+    if(_Menu){
+        const keys = ['a','d','j','ArrowLeft','ArrowRight'];
+        if(keys.includes(event.key)){
+            event.preventDefault();
+            switch(event.key){
+                case 'a':
+                case 'ArrowLeft':
+                    _Menu.updateSelection(-1);
+                    break;
+                case 'd':
+                case 'ArrowRight':
+                    _Menu.updateSelection(1);
+                    break;
+                case 'j':
+                    _Menu.select();
+                    break;
+            }
+        }
+    }
+}
+
+class Title {
+    constructor(){
+        this.options = [
+            'play',
+            'options',
+        ]
+        this.selection = 0;
+        this.cursor = LifeIcon;
+    }
+    updateSelection(n){
+        // handle selection
+        // selection = something?
+        this.selection += n;
+        if(this.selection < 0) this.selection = this.options.length - 1;
+        if(this.selection >= this.options.length) this.selection = 0;
+    }
+    select(){
+        _State = this.options[this.selection];
+        _Menu = undefined;
+        // console.log(this.options[this.selection]);
+    }
+    draw(){
+        // Draw BG Images / Demo
+        // Draw Main Title As Image
+        // Draw Main Title As Text
+        ctx.fillStyle = 'white';
+        ctx.font = `300 48px Orbitron, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText('MOON ROCKS', 320, 140);
+        // Draw Options
+
+        const playX = 268.5;
+        const optionsX = 371;
+        const yHeight = 230;
+
+        ctx.font = `300 18px Orbitron, sans-serif`;
+        ctx.fillText('Play', playX, yHeight);
+        ctx.fillText('Options', optionsX, yHeight);
+        // Draw Cursor
+        let cursorX = -7.5;
+        switch(this.selection){
+            case 0:
+                // play
+                cursorX += playX;
+                break;
+            case 1:
+                // options
+                cursorX += optionsX;
+                break;
+        }
+        renderSprite(this.cursor, cursorX, yHeight + 10);
+        // Draw SubText (A game by...)
+        ctx.font = `300 12px Orbitron, sans-serif`;
+        ctx.fillText('Move Cursor with "A" and "D" / Press "J" to Choose Selection', 320, 340);
+        ctx.font = `300 10px Orbitron, sans-serif`;
+        ctx.fillText('A Game by Hashbrownz', 320, 355);
+    }
+}
+
+class Menu {
+    constructor(options){
+        this.options = options;
+        this.selection = 0;
+        this.cursor = LifeIcon;
+    }
+    updateSelection(n){
+        this.selection += n;
+        if(this.selection < 0) this.selection = this.options.length - 1;
+        if(this.selection >= this.options.length) this.selection = 0;
+    }
+    select(){
+        _State = this.options[this.selection];
+        _Menu = undefined;
+    }
+    drawSubText(){
+        // Draw SubText (A game by...)
+        ctx.font = `300 12px Orbitron, sans-serif`;
+        ctx.fillText('Move Cursor with "A" and "D" / Press "J" to Choose Selection', 320, 340);
+        ctx.font = `300 10px Orbitron, sans-serif`;
+        ctx.fillText('A Game by Hashbrownz', 320, 355);
+    }
+}
+
+class GameOver extends Menu{
+    constructor(){
+        super(['play','title']);
+    }
+    draw(score){
+        ctx.fillStyle = 'white';
+        ctx.textAlign = 'center';
+        // Draw Thank You Message
+        ctx.font = `300 21px Orbitron, sans-serif`;
+        ctx.fillText('Thanks for Playing!', 320, 123);
+
+        // Draw Final Score
+        ctx.font = `300 12px Orbitron, sans-serif`;
+        ctx.fillText('Final Score', 320, 156);
+        ctx.font = `300 21px Orbitron, sans-serif`;
+        ctx.fillText(String(score), 320, 179);
+
+        // Draw Options
+        const pax = 260;
+        const qx = 380;
+        const y = 230;
+
+        ctx.font = `300 18px Orbitron, sans-serif`;
+        ctx.fillText('Play Again', pax, y);
+        ctx.fillText('Quit', qx, y);
+
+        // Draw Cursor
+        let cursorX = -7.5;
+        switch(this.selection){
+            case 0:
+                cursorX += pax;
+                break;
+            case 1:
+                cursorX += qx;
+                break;
+        }
+        renderSprite(this.cursor, cursorX, y + 10);
+        // Draw Sub Text
+        this.drawSubText();
+    }
+}
+
+class Pause extends Menu{
+    constructor(){
+        super([
+            'play',
+            'options',
+            'reset',
+            'title',
+        ])
+    }
+    draw(){
+        ctx.fillStyle = 'white';
+        ctx.textAlign = 'center';
+
+        // Draw Heading
+        ctx.font = `300 48px Orbitron, sans-serif`;
+        ctx.fillText('PAUSED', 320, 138);
+        // Draw Options
+        const resumeX = 157,
+            optX = 259,
+            restartX = 381,
+            qx = 502,
+            y = 230;
+
+        ctx.font = `300 18px Orbitron, sans-serif`;
+        ctx.fillText(`Resume`,resumeX,y);
+        ctx.fillText(`Options`, optX,y);
+        ctx.fillText(`Restart`,restartX,y);
+        ctx.fillText(`Quit`,qx,y);
+
+        // Draw Cursor
+        let cursorX = -7.5;
+        switch(this.selection){
+            case 0:
+                cursorX += resumeX;
+                break;
+            case 1:
+                cursorX += optX;
+                break;
+            case 2:
+                cursorX += restartX;
+                break;
+            case 3:
+                cursorX += qx;
+                break;
+        }
+        renderSprite(this.cursor, cursorX, y+10);
+        // Draw Sub Text
+        this.drawSubText();
+    }
+}
