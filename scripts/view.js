@@ -27,6 +27,13 @@ const fitToWindow = () => {
     if(document.fullscreenElement){
         document.exitFullscreen();
     }
+    // Determine Orientation
+    if(screen.orientation.type === 'portrait-primary' || screen.orientation.type === 'portrait-secondary'){
+        // If the device orientation is correct, than we continue as normal.
+        // If the device orientation is incorrect, we must prompt the user to adjust it.
+        showOrientationPrompt();
+        return;
+    }
     // get the width of the window...
     let width = window.innerWidth;
     let height = 360 * (width / 640);
@@ -35,6 +42,7 @@ const fitToWindow = () => {
         width = 640 * (window.innerHeight / 360);
     }
     resizeCanvas(width);
+    hideOrientationPrompt();
 }
 
 const setFullscreen = () => {
@@ -42,6 +50,26 @@ const setFullscreen = () => {
     resizeCanvas(window.outerWidth);
     document.getElementById('game').requestFullscreen();
     
+}
+
+// DETECT WINDOW RESIZE
+
+window.addEventListener('resize', e => {
+    fitToWindow();
+})
+
+// DETECT ORIENTATION CHANGE
+
+window.addEventListener('orientationchange', e => {
+    fitToWindow();
+})
+
+const showOrientationPrompt = () => {
+    document.getElementById('orientation-prompt').style.display = 'flex';
+}
+
+const hideOrientationPrompt = () => {
+    document.getElementById('orientation-prompt').style.display = 'none';
 }
 
 // TRANSFORMATION FUNCTIONS
