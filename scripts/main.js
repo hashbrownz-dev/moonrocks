@@ -1,6 +1,6 @@
 const _Keyboard = trackKeys();
 
-let _Game, _State = 'title', _Menu = new Title();
+let _Game, _Interface, _State = 'title', _Menu = new Title();
 
 const main = () => {
     let previousTime;
@@ -63,6 +63,12 @@ const main = () => {
 
         drawHUD(_Game);
 
+        // DRAW TOUCH INTERFACE
+
+        if(_Interface === 'touch'){
+            drawTouchControls();
+        }
+
         // RESET TRANSFORMATION
         ctx.resetTransform();
 
@@ -75,5 +81,8 @@ const main = () => {
 // Set Initial Screen Resolution
 fitToWindow();
 // ADD MENU EVENT LISTENER
+window.addEventListener('touchstart', () => {
+    _Interface = 'touch';
+})
 window.addEventListener('keydown', updateMenu);
 main();
