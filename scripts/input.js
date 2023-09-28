@@ -20,17 +20,19 @@ const getMenuInput = (event) => {
 
 // MOUSE
 
-const trackMouse = () => {
-    const mouse = { x:0, y:0 };
-    document.querySelector('canvas').addEventListener('mousemove', e => {
-        mouse.x = e.offsetX;
-        mouse.y = e.offsetY;
-    })
-    window.addEventListener('mousedown', e => {
-        mouse.down = true;
-    })
-    window.addEventListener('mouseup', e => {
-        mouse.down = false;
-    })
-    return mouse;
+const handleMouse = (e) => {
+    e.preventDefault();
+    if(_Menu && e.type === 'mousedown'){
+        const mx = Math.round(e.offsetX / getScale()),
+            my = Math.round(e.offsetY / getScale());
+        
+        for( const item of _Menu.items ){
+            if(colPointRect({x:mx,y:my}, item.col)){
+                _Menu = undefined;
+                return item.func();
+            }
+        }
+    }
 }
+
+viewport.addEventListener('mousedown', handleMouse);

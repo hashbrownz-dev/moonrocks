@@ -158,27 +158,31 @@ class Title {
 }
 
 class Menu {
-    constructor(options){
-        this.options = options;
-        this.selection = 0;
-        this.cursor = LifeIcon;
+    constructor(items){
+        this.items = items;
+        // this.options = options;
+        // this.selection = 0;
+        // this.cursor = LifeIcon;
     }
-    updateSelection(n){
-        this.selection += n;
-        if(this.selection < 0) this.selection = this.options.length - 1;
-        if(this.selection >= this.options.length) this.selection = 0;
+    drawItems(){
+        this.items.forEach( item => item.draw() );
     }
-    select(){
-        _State = this.options[this.selection];
-        _Menu = undefined;
-    }
-    drawSubText(){
-        // Draw SubText (A game by...)
-        ctx.font = `300 12px Orbitron, sans-serif`;
-        ctx.fillText('Move Cursor with "A" and "D" / Press "J" to Choose Selection', 320, 340);
-        ctx.font = `300 10px Orbitron, sans-serif`;
-        ctx.fillText('A Game by Hashbrownz', 320, 355);
-    }
+    // updateSelection(n){
+    //     this.selection += n;
+    //     if(this.selection < 0) this.selection = this.options.length - 1;
+    //     if(this.selection >= this.options.length) this.selection = 0;
+    // }
+    // select(){
+    //     _State = this.options[this.selection];
+    //     _Menu = undefined;
+    // }
+    // drawSubText(){
+    //     // Draw SubText (A game by...)
+    //     ctx.font = `300 12px Orbitron, sans-serif`;
+    //     ctx.fillText('Move Cursor with "A" and "D" / Press "J" to Choose Selection', 320, 340);
+    //     ctx.font = `300 10px Orbitron, sans-serif`;
+    //     ctx.fillText('A Game by Hashbrownz', 320, 355);
+    // }
 }
 
 class MenuItem {
@@ -207,14 +211,18 @@ class MenuItem {
         ctx.fillStyle = 'white';
         ctx.fillText(this.text, this.x, this.y);
 
-        ctx.strokeStyle = 'lime';
-        ctx.strokeRect(this.col.x, this.col.y, this.col.w, this.col.h );
+        // ctx.strokeStyle = 'lime';
+        // ctx.strokeRect(this.col.x, this.col.y, this.col.w, this.col.h );
     }
 }
 
 class GameOver extends Menu{
     constructor(){
-        super(['play','title']);
+        // super(['play','title']);
+        super([
+            new MenuItem('Play Again', 260, 230, () => _State = 'play'),
+            new MenuItem('Quit', 380, 230, () => _State = 'title'),
+        ])
     }
     draw(score){
         ctx.fillStyle = 'white';
@@ -229,39 +237,33 @@ class GameOver extends Menu{
         ctx.font = `300 21px Orbitron, sans-serif`;
         ctx.fillText(String(score), 320, 179);
 
-        // Draw Options
-        const pax = 260;
-        const qx = 380;
-        const y = 230;
+        // Draw Items
+        this.drawItems();
 
-        ctx.font = `300 18px Orbitron, sans-serif`;
-        ctx.fillText('Play Again', pax, y);
-        ctx.fillText('Quit', qx, y);
-
-        // Draw Cursor
-        let cursorX = -7.5;
-        switch(this.selection){
-            case 0:
-                cursorX += pax;
-                break;
-            case 1:
-                cursorX += qx;
-                break;
-        }
-        renderSprite(this.cursor, cursorX, y + 10);
-        // Draw Sub Text
-        this.drawSubText();
+        // // Draw Cursor
+        // let cursorX = -7.5;
+        // switch(this.selection){
+        //     case 0:
+        //         cursorX += pax;
+        //         break;
+        //     case 1:
+        //         cursorX += qx;
+        //         break;
+        // }
+        // renderSprite(this.cursor, cursorX, y + 10);
+        // // Draw Sub Text
+        // this.drawSubText();
     }
 }
 
 class Pause extends Menu{
     constructor(){
         super([
-            'play',
-            'options',
-            'reset',
-            'title',
-        ])
+            new MenuItem('Resume', 157, 230, () => _State = 'play' ),
+            new MenuItem('Options', 275, 230, () => _State = 'options' ),
+            new MenuItem('Restart', 396, 230, ()=> _State = 'reset' ),
+            new MenuItem('Quit', 502, 230, ()=> _State = 'title' ),
+        ]);
     }
     draw(){
         ctx.fillStyle = 'white';
@@ -270,37 +272,28 @@ class Pause extends Menu{
         // Draw Heading
         ctx.font = `300 48px Orbitron, sans-serif`;
         ctx.fillText('PAUSED', 320, 138);
-        // Draw Options
-        const resumeX = 157,
-            optX = 259,
-            restartX = 381,
-            qx = 502,
-            y = 230;
 
-        ctx.font = `300 18px Orbitron, sans-serif`;
-        ctx.fillText(`Resume`,resumeX,y);
-        ctx.fillText(`Options`, optX,y);
-        ctx.fillText(`Restart`,restartX,y);
-        ctx.fillText(`Quit`,qx,y);
+        // Draw Items
+        this.drawItems();
 
-        // Draw Cursor
-        let cursorX = -7.5;
-        switch(this.selection){
-            case 0:
-                cursorX += resumeX;
-                break;
-            case 1:
-                cursorX += optX;
-                break;
-            case 2:
-                cursorX += restartX;
-                break;
-            case 3:
-                cursorX += qx;
-                break;
-        }
-        renderSprite(this.cursor, cursorX, y+10);
-        // Draw Sub Text
-        this.drawSubText();
+        // // Draw Cursor
+        // let cursorX = -7.5;
+        // switch(this.selection){
+        //     case 0:
+        //         cursorX += resumeX;
+        //         break;
+        //     case 1:
+        //         cursorX += optX;
+        //         break;
+        //     case 2:
+        //         cursorX += restartX;
+        //         break;
+        //     case 3:
+        //         cursorX += qx;
+        //         break;
+        // }
+        // renderSprite(this.cursor, cursorX, y+10);
+        // // Draw Sub Text
+        // this.drawSubText();
     }
 }
