@@ -31,7 +31,7 @@ const fitToWindow = () => {
     if(screen.orientation.type === 'portrait-primary' || screen.orientation.type === 'portrait-secondary'){
         // If the device orientation is correct, than we continue as normal.
         // If the device orientation is incorrect, we must prompt the user to adjust it.
-        showOrientationPrompt();
+        // showOrientationPrompt();
         return;
     }
     // get the width of the window...
@@ -42,7 +42,7 @@ const fitToWindow = () => {
         width = 640 * (window.innerHeight / 360);
     }
     resizeCanvas(width);
-    hideOrientationPrompt();
+    // hideOrientationPrompt();
 }
 
 const setFullscreen = () => {
