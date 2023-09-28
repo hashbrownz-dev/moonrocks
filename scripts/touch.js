@@ -53,12 +53,25 @@ const handleTouch = (e) => {
     if(_Interface !== 'touch') _Interface = 'touch';
     // GET THE X,Y COORDS OF OUR VIEWPORT
     const { x, y } = viewport.getBoundingClientRect();
-    for( const b of TouchButtons ){
-        b.active = false;
-        for( const touch of e.touches ){
-            const tCol = new Circ((touch.clientX - x) / getScale(), (touch.clientY - y) / getScale(), touch.radiusX);
-            if(colCirc(b.col, tCol)){
-                b.active = true;
+    // If There's a Menu... do THIS
+    if(_Menu && e.type === 'touchstart'){
+        for( const item of _Menu.items ){
+            for( const touch of e.touches ){
+                const tCol = new Circ((touch.clientX - x) / getScale(), (touch.clientY - y) / getScale(), touch.radiusX);
+                if(colCircRect(tCol, item.col)){
+                    _Menu = undefined;
+                    return item.func();
+                }
+            }
+        }
+    } else {
+        for( const b of TouchButtons ){
+            b.active = false;
+            for( const touch of e.touches ){
+                const tCol = new Circ((touch.clientX - x) / getScale(), (touch.clientY - y) / getScale(), touch.radiusX);
+                if(colCirc(b.col, tCol)){
+                    b.active = true;
+                }
             }
         }
     }

@@ -118,6 +118,10 @@ class Title {
             'play',
             'options',
         ]
+        this.items = [
+            new MenuItem('Play', 268.5, 230, ()=>_State = 'play'),
+            new MenuItem('Options', 371, 230, () => _State = 'options'),
+        ]
         this.selection = 0;
         this.cursor = LifeIcon;
     }
@@ -143,29 +147,11 @@ class Title {
         ctx.fillText('MOON ROCKS', 320, 140);
         // Draw Options
 
-        const playX = 268.5;
-        const optionsX = 371;
-        const yHeight = 230;
+        this.items.forEach( item => item.draw() );
 
-        ctx.font = `300 18px Orbitron, sans-serif`;
-        ctx.fillText('Play', playX, yHeight);
-        ctx.fillText('Options', optionsX, yHeight);
-        // Draw Cursor
-        let cursorX = -7.5;
-        switch(this.selection){
-            case 0:
-                // play
-                cursorX += playX;
-                break;
-            case 1:
-                // options
-                cursorX += optionsX;
-                break;
-        }
-        renderSprite(this.cursor, cursorX, yHeight + 10);
         // Draw SubText (A game by...)
-        ctx.font = `300 12px Orbitron, sans-serif`;
-        ctx.fillText('Move Cursor with "A" and "D" / Press "J" to Choose Selection', 320, 340);
+        // ctx.font = `300 12px Orbitron, sans-serif`;
+        // ctx.fillText('Move Cursor with "A" and "D" / Press "J" to Choose Selection', 320, 340);
         ctx.font = `300 10px Orbitron, sans-serif`;
         ctx.fillText('A Game by Hashbrownz', 320, 355);
     }
@@ -192,6 +178,37 @@ class Menu {
         ctx.fillText('Move Cursor with "A" and "D" / Press "J" to Choose Selection', 320, 340);
         ctx.font = `300 10px Orbitron, sans-serif`;
         ctx.fillText('A Game by Hashbrownz', 320, 355);
+    }
+}
+
+class MenuItem {
+    // if scale doesn't affect text metrics... (i.e. if they are based on font) then we can just use the same code as bombardment
+    constructor(text = 'default', x = 0, y = 0, func){
+        this.text = text;
+        this.x = x;
+        this.y = y;
+        this.func = func;
+
+        this.font = `300 18px Orbitron, sans-serif`;
+        this.align = `center`;
+
+        // Set Font and Alignment
+        ctx.font = this.font;
+        ctx.textAlign = this.align;
+
+        // Measure Text to Create Bounding Rect
+        const { width, actualBoundingBoxAscent:top, actualBoundingBoxDescent:bottom, actualBoundingBoxLeft:left, actualBoundingBoxRight:right } = ctx.measureText(text);
+        this.col = new Rect( this.x - left - 8, this.y - top, width + 16, top + bottom );
+    }
+    //
+    draw(){
+        ctx.font = this.font;
+        ctx.align = this.align;
+        ctx.fillStyle = 'white';
+        ctx.fillText(this.text, this.x, this.y);
+
+        ctx.strokeStyle = 'lime';
+        ctx.strokeRect(this.col.x, this.col.y, this.col.w, this.col.h );
     }
 }
 

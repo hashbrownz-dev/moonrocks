@@ -65,7 +65,7 @@ const main = () => {
 
         // DRAW TOUCH INTERFACE
 
-        if(_Interface === 'touch'){
+        if(_Interface === 'touch' && !_Menu){
             TouchButtons.forEach( button => button.draw() );
         }
 
