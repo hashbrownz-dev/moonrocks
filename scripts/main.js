@@ -66,7 +66,7 @@ const main = () => {
         // DRAW TOUCH INTERFACE
 
         if(_Interface === 'touch'){
-            drawTouchControls();
+            TouchButtons.forEach( button => button.draw() );
         }
 
         // RESET TRANSFORMATION
@@ -81,8 +81,5 @@ const main = () => {
 // Set Initial Screen Resolution
 fitToWindow();
 // ADD MENU EVENT LISTENER
-window.addEventListener('touchstart', () => {
-    _Interface = 'touch';
-})
 window.addEventListener('keydown', updateMenu);
 main();

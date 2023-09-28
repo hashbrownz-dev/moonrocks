@@ -29,8 +29,8 @@ class Game {
         this.gameOver = false;
         this.gameOverTimer = 300;
     }
-    update(keyboard){
-        if(keyboard[' ']){
+    update(){
+        if(_Keyboard[' ']){
             _State = 'pause';
             return;
         }
@@ -42,7 +42,7 @@ class Game {
         this.collectibles.forEach( c => c.update(this) );
         // UPDATE PLAYER
         if(this.player){
-            this.player.update(keyboard, this);
+            this.player.update(this);
         }
 
         // CLEAN UP

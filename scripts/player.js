@@ -31,17 +31,17 @@ class Player extends Actor{
             }
         }
     }
-    update(input, game){
+    update(game){
         // GET PLAYER INPUT
-        if(input['a']) this.dir -= 2;
-        if(input['d']) this.dir += 2;
+        if(_Keyboard['a'] || TouchButtons[0].active ) this.dir -= 2;
+        if(_Keyboard['d'] || TouchButtons[1].active ) this.dir += 2;
 
         // DIR CLAMP
         if(this.dir < 0) this.dir = 359 + this.dir;
         if(this.dir > 359) this.dir = this.dir - 359;
 
         // THRUSTERS
-        if(input['j'] || input['w']){
+        if(_Keyboard['j'] || _Keyboard['w'] || TouchButtons[3].active){
             // Convert this.direction from degrees to radians.
             const theta = degToRad(this.dir);
             // Update xSpeed
@@ -91,10 +91,12 @@ class Player extends Actor{
 
         // LASERS
         this.shotCooldown--;
-        if(input['k'] && this.shotCooldown <= 0){
-            const offset = getDestination(12,this.dir);
-            game.projectiles.push(new PShot(this.x+offset.x,this.y+offset.y,this.dir));
-            this.shotCooldown = 10;
+        if(this.shotCooldown <= 0){
+            if(_Keyboard['k'] || TouchButtons[2].active){
+                const offset = getDestination(12,this.dir);
+                game.projectiles.push(new PShot(this.x+offset.x,this.y+offset.y,this.dir));
+                this.shotCooldown = 10;
+            }
         }
     }
 }
