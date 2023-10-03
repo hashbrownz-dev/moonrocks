@@ -31,8 +31,10 @@ const fitToWindow = () => {
     if(screen.orientation.type === 'portrait-primary' || screen.orientation.type === 'portrait-secondary'){
         // If the device orientation is correct, than we continue as normal.
         // If the device orientation is incorrect, we must prompt the user to adjust it.
-        // showOrientationPrompt();
-        return;
+        showOrientationPrompt();
+    } else {
+        document.getElementById('orientation-prompt').style.display = 'none';
+        document.getElementById('game').style.display = 'block';
     }
     // get the width of the window...
     let width = window.innerWidth;
@@ -64,12 +66,17 @@ window.addEventListener('orientationchange', e => {
     fitToWindow();
 })
 
-const showOrientationPrompt = () => {
-    document.getElementById('orientation-prompt').style.display = 'flex';
-}
+// SHOW ORIENTATION PROMPT
 
-const hideOrientationPrompt = () => {
-    document.getElementById('orientation-prompt').style.display = 'none';
+const showOrientationPrompt = () => {
+    // STOP THE GAME IF IT IS IN A STATE OF PLAY
+    if ( _State === 'play' ){
+        _State = 'pause';
+    }
+    // HIDE THE GAME ELEMENT
+    document.getElementById('game').style.display = 'none';
+    // SHOW THE PROMPT
+    document.getElementById('orientation-prompt').style.display = 'flex';
 }
 
 // TRANSFORMATION FUNCTIONS

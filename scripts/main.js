@@ -80,6 +80,4 @@ const main = () => {
 
 // Set Initial Screen Resolution
 fitToWindow();
-// ADD MENU EVENT LISTENER
-// window.addEventListener('keydown', updateMenu);
 main();
