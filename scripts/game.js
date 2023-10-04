@@ -9,6 +9,7 @@ class Game {
         this.actors = MoonRock.spawn();
         this.projectiles = [];
         this.collectibles = [];
+        this.particles = [];
         this.gameOver = false;
         // DEBUG
         this.showColShapes = false;
@@ -26,6 +27,7 @@ class Game {
         this.actors = MoonRock.spawn();
         this.projectiles = [];
         this.collectibles = [];
+        this.particles = [];
         this.gameOver = false;
         this.gameOverTimer = 300;
     }
@@ -44,6 +46,8 @@ class Game {
         if(this.player){
             this.player.update(this);
         }
+        // UPDATE PARTICLES
+        this.particles.forEach( part => part.update(this) );
 
         // CLEAN UP
         if(this.player){
@@ -59,7 +63,9 @@ class Game {
         }
         this.actors = this.actors.filter( (actor) => !actor.clear );
         this.projectiles = this.projectiles.filter( p => !p.clear );
-        this.collectibles = this.collectibles.filter( c => !c.clear);
+        this.collectibles = this.collectibles.filter( c => !c.clear );
+        this.particles = this.particles.filter( part => !part.clear );
+
         if(this.actors.length === 0){
             this.level++;
             this.actors = MoonRock.spawn(2+this.level);
@@ -89,6 +95,9 @@ class Game {
         this.collectibles.forEach( c => c.draw() );
         // DRAW PROJECTILES
         this.projectiles.forEach( proj => proj.draw() );
+        // DRAW PARTICLES
+        this.particles.forEach( part => part.draw() );
+
         if(this.gameOver && this.gameOverTimer > 0){
             // DRAW GAME OVER
             ctx.font = `300 18px Orbitron, sans-serif`;

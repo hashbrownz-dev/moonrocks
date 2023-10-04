@@ -104,6 +104,7 @@ class MoonRock extends Actor{
                 projectile.clear = true;
                 this.hp -= projectile.power;
                 game.score+=5;
+                game.particles.push(setEffectBulletImpact(projectile.x, projectile.y, projectile.dir));
                 if(this.hp <= 0) {
                     this.clear = true;
                     game.score+=this.points - 15;
@@ -153,6 +154,7 @@ class MoonRockMed extends Actor{
                 projectile.clear = true;
                 this.hp -= projectile.power;
                 game.score += 5;
+                game.particles.push(setEffectBulletImpact(projectile.x, projectile.y, projectile.dir));
                 if(this.hp <= 0) {
                     this.clear = true;
                     game.actors.push(new MoonRockSmall(this), new MoonRockSmall(this));
@@ -199,6 +201,7 @@ class MoonRockSmall extends Actor{
             if(colCirc(this.colShapes[0],projectile.colShapes[0])){
                 projectile.clear = true;
                 this.hp -= projectile.power;
+                game.particles.push(setEffectBulletImpact(projectile.x, projectile.y, projectile.dir));
                 if(this.hp <= 0) {
                     this.clear = true;
                     game.score += this.points;
