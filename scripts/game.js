@@ -12,6 +12,7 @@ class Game {
         this.collectibles = [];
         this.particles = [];
         this.gameOver = false;
+        this.UFOtimer = 900;
         this.spawnMoonRocks();
         // DEBUG
         this.showColShapes = false;
@@ -54,8 +55,16 @@ class Game {
             _State = 'pause';
             return;
         }
-        // UPDATE ALARMS
-        this.alarms.forEach( alarm => alarm.update(this) );
+        // UFO
+        this.UFOtimer--;
+        if(this.UFOtimer <= 0){
+            // SPAWN A UFO
+            // SET THE UFO TIMER TO (15 - level (this value cannot go lower than 8))
+            this.actors.push(new UFO());
+            let mod = 15 - this.level;
+            if(mod < 7) mod = 7;
+            this.UFOtimer = 60 * mod;
+        }
         // UPDATE ACTORS
         this.actors.forEach( (actor) => actor.update(this) );
         // UPDATE PROJECTILES
@@ -88,7 +97,6 @@ class Game {
                 this.spawnPlayer();
             }
         }
-        this.alarms = this.alarms.filter( alarm => !alarm.clear );
         this.actors = this.actors.filter( (actor) => !actor.clear );
         this.projectiles = this.projectiles.filter( p => !p.clear );
         this.collectibles = this.collectibles.filter( c => !c.clear );
