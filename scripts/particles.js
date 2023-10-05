@@ -120,6 +120,92 @@ class Fade extends Particle {
     }
 }
 
+class PartLine{
+    constructor(p1,p2,dir,speed,duration,spin){
+        this.p1 = p1;
+        this.p2 = p2;
+        this.dir = dir;
+        this.speed = speed;
+        this.duration = duration;
+        this.spin = spin;
+        this.angle = 0;
+    }
+    get clear(){
+        return this.duration < 0
+    }
+    get center(){
+        const rx = this.p1.x < this.p2.x ? this.p1.x : this.p2.x,
+            ry = this.p1.y < this.p2.y ? this.p1.y : this.p2.y,
+            rw = Math.abs(this.p1.x - this.p2.x),
+            rh = Math.abs(this.p1.y - this.p2.y);
+        return {
+            x : rw / 2 + rx,
+            y : rh / 2 + ry,
+        }
+    }
+    update(){
+        this.duration--;
+        // this.spin -= 0.01;
+        this.speed -= 0.025;
+        this.angle += this.spin;
+        // Move each point
+        const dest = getDestination(this.speed, this.dir);
+        this.p1.x += dest.x;
+        this.p1.y += dest.y;
+        this.p2.x += dest.x;
+        this.p2.y += dest.y;
+    }
+    draw(){
+        ctx.strokeStyle = 'white';
+
+        ctx.save();
+
+        rotate(this.center,this.angle);
+
+        ctx.beginPath();
+        ctx.moveTo(this.p1.x,this.p1.y);
+        ctx.lineTo(this.p2.x,this.p2.y);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+}
+
+// MASK DESTRUCTURING
+
+const getMaskShape = (mask, x, y, dir) =>{
+
+    if(mask.type === 'polygon'){
+        const tethers = mask.tethers.map( tether => {
+            return {
+                l : tether.l,
+                a : tether.a + dir
+            }
+        });
+        const points = [];
+        tethers.forEach( tether => {
+            points.push(getDestination(tether.l, tether.a));
+        });
+        points.forEach( point => {
+            point.x += x;
+            point.y += y;
+        })
+        return points;
+    }
+}
+
+const getPolyLines = (poly) => {
+    const lines = [];
+    for( let i = 0; i < poly.length; i++ ){
+        if( poly[i+1] ){
+            lines.push( [ poly[i], poly[i+1] ] );
+        } else {
+            lines.push( [ poly[i], poly[0] ] );
+        }
+    }
+    return lines;
+}
+
 // EFFECT - BULLET IMPACT
 
 const setEffectBulletImpact = (x,y,entry) => {
@@ -155,4 +241,25 @@ const setEffectPartExplosion = (x,y) => {
 
 const setEffectCircleExplosion = (x,y,radius) => {
     return new Emitter(x,y, -1, [new Bloom(x,y,15,radius,true)])
+}
+
+// EFFECT - MASK EXPLOSION
+
+const setEffectMaskExplosion = (mask, mx, my, mdir) => {
+    const lines = getPolyLines(getMaskShape(mask, mx, my, mdir));
+    const parts = [];
+    for ( const line of lines ) {
+        const p1 = line[0], p2 = line[1],
+            rx = p1.x < p2.x ? p1.x : p2.x,
+            ry = p1.y < p2.y ? p1.y : p2.y,
+            rw = Math.abs(p1.x - p2.x),
+            rh = Math.abs(p1.y - p2.y),
+            center = {
+                x : rw / 2 + rx,
+                y : rh / 2 + ry,
+            },
+            dir = getDirection({ x:mx, y:my }, center);
+        parts.push(new PartLine( { x:p1.x, y:p1.y }, { x:p2.x, y:p2.y }, dir, getRandom(1,3), getRandom(30,60), getRandom(1,8)));
+    }
+    return new Emitter(mx,my,120,parts);
 }
