@@ -8,6 +8,7 @@ class Player extends Actor{
         this.ySpeed = 0;
         this.thruster = 0.1;
         this.shotCooldown = 20;
+        this.beamTargets = [];
     }
     getNewPos(){
         // CALCULATE SPEED
@@ -92,8 +93,6 @@ class Player extends Actor{
             })
         }
 
-        // DISPLAY SPEED
-
         // WRAP
         this.wrap();
 
@@ -104,6 +103,34 @@ class Player extends Actor{
                 const offset = getDestination(12,this.dir);
                 game.projectiles.push(new PShot(this.x+offset.x,this.y+offset.y,this.dir));
                 this.shotCooldown = 10;
+            }
+        }
+
+        // TRACTOR BEAM
+
+        this.beamTargets = [];
+        const r = _Keyboard['k'] || TouchButtons[2].active ? 24 : 48;
+        const t = new Circ(this.x, this.y, r);
+        for( const collectible of game.collectibles ){
+            if(colCirc(t, collectible.colShapes[0])){
+                collectible.dir = getDirection(collectible, this);
+                collectible.speed += 0.1;
+                if(collectible.speed > 5)collectible.speed = 5;
+                this.beamTargets.push( {x : collectible.x, y : collectible.y });
+            }
+        }
+    }
+    draw(){
+        renderSprite(this.sprite, this.drawX, this.drawY, { dir:this.dir });
+        // DRAW TRACTOR BEAM
+        if(this.beamTargets.length){
+            for( const target of this.beamTargets ){
+                const { x, y } = target;
+                ctx.strokeStyle = 'lime';
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(x,y);
+                ctx.stroke();
             }
         }
     }
@@ -135,6 +162,8 @@ class PShot extends Actor {
         this.wrap();
     }
 }
+
+// COLLECTIBLES
 
 class CollectStar extends Actor{
     constructor(x,y,dir,speed){
