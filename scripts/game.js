@@ -6,11 +6,13 @@ class Game {
         this.lives = 5;
         this.level = 1;
         this.player = new Player();
-        this.actors = MoonRock.spawn();
+        this.actors = [];
+        this.alarms = [];
         this.projectiles = [];
         this.collectibles = [];
         this.particles = [];
         this.gameOver = false;
+        this.spawnMoonRocks();
         // DEBUG
         this.showColShapes = false;
     }
@@ -30,12 +32,30 @@ class Game {
         this.particles = [];
         this.gameOver = false;
         this.gameOverTimer = 300;
+        this.spawnTimer = 0;
+    }
+    spawnMoonRocks(amount = 3){
+        for(let i = amount; i > 0; i--){
+            this.actors.push(new MoonRock(this.player));
+        }
+    }
+    spawnPlayer(){
+        const testCirc = new Circ(320, 180, 24);
+        let isSafe = true;
+        for( const actor of this.actors ){
+            if( colCirc(testCirc, actor.colShapes[0])){
+                isSafe = false;
+            }
+        }
+        this.player = isSafe ? new Player() : undefined;
     }
     update(){
         if(_Keyboard[' ']){
             _State = 'pause';
             return;
         }
+        // UPDATE ALARMS
+        this.alarms.forEach( alarm => alarm.update(this) );
         // UPDATE ACTORS
         this.actors.forEach( (actor) => actor.update(this) );
         // UPDATE PROJECTILES
@@ -50,17 +70,25 @@ class Game {
         this.particles.forEach( part => part.update(this) );
 
         // CLEAN UP
+
         if(this.player){
-            this.player = this.player.clear ? undefined : this.player;   
+            if(this.player.clear){
+                this.player = undefined;
+                this.lives--;
+                if(this.lives >= 0){
+                    this.spawnTimer = 60;
+                } else {
+                    this.gameOver = true;
+                    this.gameOverTimer = 300;
+                }
+            }
         } else {
-            this.lives --;
-            if(this.lives >= 0) {
-                this.player = new Player();
-            } else if(!this.gameOver) {
-                this.gameOver = true;
-                this.gameOverTimer = 300;
+            this.spawnTimer--;
+            if( this.spawnTimer <= 0 && !this.gameOver ){
+                this.spawnPlayer();
             }
         }
+        this.alarms = this.alarms.filter( alarm => !alarm.clear );
         this.actors = this.actors.filter( (actor) => !actor.clear );
         this.projectiles = this.projectiles.filter( p => !p.clear );
         this.collectibles = this.collectibles.filter( c => !c.clear );
@@ -68,7 +96,7 @@ class Game {
 
         if(this.actors.length === 0){
             this.level++;
-            this.actors = MoonRock.spawn(2+this.level);
+            this.spawnMoonRocks(2+this.level);
         }
 
         // SCORE CHECK

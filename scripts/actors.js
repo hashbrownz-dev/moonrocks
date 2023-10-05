@@ -75,13 +75,7 @@ class MoonRock extends Actor{
         this.points = 25;
         this.type = 'rock';
     }
-    static spawn(amount = 3){
-        const output = [];
-        for(let i = amount; i > 0; i--){
-            output.push(new MoonRock());
-        }
-        return output;
-    }
+
     explode(game){
         // GET MASK
         const mask = getMaskShape(this.sprite.mask, this.x, this.y, this.dir);

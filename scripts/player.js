@@ -52,6 +52,14 @@ class Player extends Actor{
             this.ySpeed += this.thruster * Math.sin(theta);
             if(this.ySpeed > 5) this.ySpeed = 5;
             if(this.ySpeed < -5) this.ySpeed = -5;
+        } else {
+            let diff = 0.01;
+            if( _Keyboard['s'] || _Keyboard['l'] || TouchButtons[4].active ) diff = 0.05;
+            // DECELLERATE
+            if(this.xSpeed > 0) this.xSpeed -= diff;
+            if(this.xSpeed < 0) this.xSpeed += diff;
+            if(this.ySpeed > 0) this.ySpeed -= diff;
+            if(this.ySpeed < 0) this.ySpeed += diff;
         }
 
         // UPDATE POS
