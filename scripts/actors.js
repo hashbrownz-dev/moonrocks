@@ -310,7 +310,8 @@ class UFO extends Actor {
                 if(this.hp <= 0){
                     this.clear = true;
                     game.score += this.points;
-                    game.collectibles.push(new CollectStar(this.x,this.y));
+                    const d = this.xSpeed < 0 ? 180 : 0;
+                    game.collectibles.push(new CollectStar(this.x,this.y,d,Math.abs(this.xSpeed)));
                     game.particles.push(setEffectMaskExplosion(this.sprite.mask,this.x,this.y,this.dir,this.sprite.palette[2]));
                     game.particles.push(setEffectPartExplosion(this.x,this.y));
                 }
