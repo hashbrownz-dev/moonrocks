@@ -175,13 +175,19 @@ class CollectStar extends Actor{
             Gem02,
             Gem03,
         ]
+        const colors = [
+            yellow,
+            lime,
+            orange,
+            pink,
+        ]
         super(sprites[getRandom(0,2)]);
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.speed = speed;
         this.decay = 600;
-        this.color = '#ff0000';
+        this.color = colors[getRandom(0,colors.length-1)];
     }
     update(game){
         // DECAY
@@ -204,6 +210,6 @@ class CollectStar extends Actor{
         }
     }
     draw(){
-        renderSprite(this.sprite, this.drawX, this.drawY);
+        renderSprite(this.sprite, this.drawX, this.drawY,{ color : [{'#FFFF00' : this.color}] });
     }
 }
