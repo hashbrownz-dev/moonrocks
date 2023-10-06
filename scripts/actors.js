@@ -99,10 +99,11 @@ class MoonRock extends Actor{
             if(colCirc(this.colShapes[0],projectile.colShapes[0])){
                 projectile.clear = true;
                 this.hp -= projectile.power;
-                game.score+=5;
+                if(projectile.type !== 'ufo') game.score+=5;
                 game.particles.push(setEffectBulletImpact(projectile.x, projectile.y, projectile.dir));
                 if(this.hp <= 0) {
                     this.clear = true;
+                    console.log(projectile.type);
                     if(projectile.type !== 'ufo') game.score+=this.points - 15;
                     game.actors.push(new MoonRockMed(this), new MoonRockMed(this))
                     game.particles.push(setEffectMaskExplosion(this.sprite.mask,this.x,this.y,this.dir,this.sprite.palette[1]));
@@ -153,7 +154,7 @@ class MoonRockMed extends Actor{
             if(colCirc(this.colShapes[0],projectile.colShapes[0])){
                 projectile.clear = true;
                 this.hp -= projectile.power;
-                game.score += 5;
+                if(projectile.type !== 'ufo') game.score += 5;
                 game.particles.push(setEffectBulletImpact(projectile.x, projectile.y, projectile.dir));
                 if(this.hp <= 0) {
                     this.clear = true;
@@ -327,6 +328,19 @@ class UFO extends Actor {
                 game.particles.push(setEffectPartExplosion(this.x,this.y));
             }
         })
+
+        if(game.player){
+            if(colPolyCirc(game.player.colShapes[0], new Circ(this.x, this.y, 12))){
+                this.clear = true;
+                game.player.clear = true;
+                // UFO
+                game.particles.push(setEffectMaskExplosion(this.sprite.mask,this.x,this.y,this.dir,this.sprite.palette[2]));
+                game.particles.push(setEffectPartExplosion(this.x,this.y));
+                // PLAYER
+                game.particles.push(setEffectMaskExplosion(game.player.sprite.mask,game.player.x,game.player.y,game.player.dir,game.player.sprite.palette[1]));
+                game.particles.push(setEffectPartExplosion(game.player.x,game.player.y));
+            }
+        }
     }
     draw(){
         renderSprite(this.sprite, this.drawX, this.drawY);
