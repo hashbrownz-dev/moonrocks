@@ -229,9 +229,10 @@ class UFO extends Actor {
         this.ySpeed = 0;
         this.hp = 2;
         this.points = 200;
-        this.toShoot = getRandom(120,240);
+        this.toShoot = getRandom(100,200);
         this.type = 'ufo';
         this.nearest = undefined;
+        this.bankCheck = 60;
     }
     getNearest(game){
         // GET THE NEAREST TARGET
@@ -257,18 +258,48 @@ class UFO extends Actor {
             if(this.x < -this.drawW) this.clear = true;
         }
         // UPDATE Y POS
+
+        this.bankCheck--;
+        if(this.bankCheck <= 0){
+            this.bankCheck = getRandom(60,120);
+            const n = getRandom(0,2);
+            switch (n){
+                case 2:
+                    this.ySpeed = 1;
+                    break;
+                case 1:
+                    this.ySpeed = -1;
+                    break;
+                case 0:
+                default:
+                    this.ySpeed = 0;
+                    break;
+            }
+        }
+
+        this.y += this.ySpeed;
+
+        // VERTICAL WRAP
+
+        if(this.y > 360 + this.drawH / 2) this.y = -this.drawH/2;
+        if(this.y < -this.drawH / 2) this.y = 360 + this.drawH/2;
+        
         // SHOOT
         this.toShoot--;
-        
+        this.getNearest(game);
+
         if( this.toShoot <= 0 ){
             // RESET TO SHOOT
-            this.toShoot = getRandom(120,240);
+            this.toShoot = getRandom(100,200);
             // GET NEAREST
-            this.getNearest(game);
+            
             // SHOOT
-            const dir = getDirection(this, this.nearest);
-            game.projectiles.push(new UFOShot(this.x,this.y,dir));
+            if(this.nearest){
+                const dir = getDirection(this, this.nearest);
+                game.projectiles.push(new UFOShot(this.x,this.y,dir));
+            }
         }
+
         // COLLISIONS
         const projs = game.projectiles.filter( p => p.type != 'ufo');
         projs.forEach( (proj) => {
@@ -298,15 +329,6 @@ class UFO extends Actor {
     }
     draw(){
         renderSprite(this.sprite, this.drawX, this.drawY);
-
-        // DRAW LINE TO NEAREST TARGET
-        if(this.nearest){
-            ctx.strokeStyle = '#ff00cc';
-            ctx.beginPath();
-            ctx.moveTo(this.x,this.y);
-            ctx.lineTo(this.nearest.x,this.nearest.y);
-            ctx.stroke();
-        }
     }
 }
 
