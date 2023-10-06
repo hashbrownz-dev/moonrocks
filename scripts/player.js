@@ -1,6 +1,6 @@
 class Player extends Actor{
     constructor(){
-        super(playerShip01);
+        super(PlayerShip01);
         this.x = 320;
         this.y = 180;
         this.dir = 0;
@@ -73,14 +73,16 @@ class Player extends Actor{
         // COLLISION CHECK
         game.actors.forEach( actor => {
             if(colPolyCirc(this.colShapes[0], actor.colShapes[0])){
-                this.xSpeed *= -0.7;
-                this.ySPeed *= -0.7;
-                this.x = curPos.x;
-                this.y = curPos.y;
-                const modPos = this.getNewPos();
-                this.x = modPos.x;
-                this.y = modPos.y;
+                // this.xSpeed *= -0.7;
+                // this.ySPeed *= -0.7;
+                // this.x = curPos.x;
+                // this.y = curPos.y;
+                // const modPos = this.getNewPos();
+                // this.x = modPos.x;
+                // this.y = modPos.y;
                 this.clear = true;
+                game.particles.push(setEffectMaskExplosion(this.sprite.mask,this.x,this.y,this.dir,this.sprite.palette[1]));
+                game.particles.push(setEffectPartExplosion(this.x,this.y));
             }
         })
         const projs = game.projectiles.filter( p => p.type === 'ufo' );
@@ -89,6 +91,8 @@ class Player extends Actor{
                 if(colPolyCirc(this.colShapes[0],proj.colShapes[0])){
                     proj.clear = true;
                     this.clear = true;
+                    game.particles.push(setEffectMaskExplosion(this.sprite.mask,this.x,this.y,this.dir,this.sprite.palette[1]));
+                    game.particles.push(setEffectPartExplosion(this.x,this.y));
                 }
             })
         }
@@ -167,7 +171,12 @@ class PShot extends Actor {
 
 class CollectStar extends Actor{
     constructor(x,y,dir,speed){
-        super(Star);
+        const sprites = [
+            Gem01,
+            Gem02,
+            Gem03,
+        ]
+        super(sprites[getRandom(0,2)]);
         this.x = x;
         this.y = y;
         this.dir = dir;

@@ -121,7 +121,7 @@ class Fade extends Particle {
 }
 
 class PartLine{
-    constructor(p1,p2,dir,speed,duration,spin){
+    constructor(p1,p2,dir,speed,duration,spin,color){
         this.p1 = p1;
         this.p2 = p2;
         this.dir = dir;
@@ -129,6 +129,7 @@ class PartLine{
         this.duration = duration;
         this.spin = spin;
         this.angle = 0;
+        this.color = color;
     }
     get clear(){
         return this.duration < 0
@@ -156,7 +157,7 @@ class PartLine{
         this.p2.y += dest.y;
     }
     draw(){
-        ctx.strokeStyle = 'white';
+        ctx.strokeStyle = this.color;
 
         ctx.save();
 
@@ -245,7 +246,7 @@ const setEffectCircleExplosion = (x,y,radius) => {
 
 // EFFECT - MASK EXPLOSION
 
-const setEffectMaskExplosion = (mask, mx, my, mdir) => {
+const setEffectMaskExplosion = (mask, mx, my, mdir, color) => {
     const lines = getPolyLines(getMaskShape(mask, mx, my, mdir));
     const parts = [];
     for ( const line of lines ) {
@@ -259,7 +260,7 @@ const setEffectMaskExplosion = (mask, mx, my, mdir) => {
                 y : rh / 2 + ry,
             },
             dir = getDirection({ x:mx, y:my }, center);
-        parts.push(new PartLine( { x:p1.x, y:p1.y }, { x:p2.x, y:p2.y }, dir, getRandom(1,3), getRandom(30,60), getRandom(1,8)));
+        parts.push(new PartLine( { x:p1.x, y:p1.y }, { x:p2.x, y:p2.y }, dir, getRandom(1,3), getRandom(30,60), getRandom(1,8), color));
     }
     return new Emitter(mx,my,120,parts);
 }
