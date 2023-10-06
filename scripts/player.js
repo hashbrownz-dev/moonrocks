@@ -58,6 +58,10 @@ class Player extends Actor{
             this.ySpeed += this.thruster * Math.sin(theta);
             if(this.ySpeed > 5) this.ySpeed = 5;
             if(this.ySpeed < -5) this.ySpeed = -5;
+            // Particles
+            // the angle is the current direction - 180...
+            const { x, y } = getDestination(16, this.dir - 180);
+            game.particles.push(setEffectThrust(x+this.x,y+this.y));
         } else {
             let diff = 0.01;
             if( _Keyboard['s'] || _Keyboard['l'] || TouchButtons[4].active ) diff = 0.05;

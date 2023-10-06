@@ -317,3 +317,9 @@ const setEffectMaskExplosion = (mask, mx, my, mdir, color) => {
     }
     return new Emitter(mx,my,120,parts);
 }
+
+// EFFECT - THRUSTER
+
+const setEffectThrust = (x,y) => {
+    return new Emitter(x,y,-1,[ new Fade(x,y,15,4,0)]);
+}
