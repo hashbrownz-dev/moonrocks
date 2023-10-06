@@ -10,6 +10,11 @@ class Player extends Actor{
         this.shotCooldown = 20;
         this.beamTargets = [];
     }
+    glow(game, color){
+        game.particles.push(new Emitter(this.x,this.y,120,[
+            new PartCirc(this.x,this.y,24,20,color),
+        ]));
+    }
     getNewPos(){
         // CALCULATE SPEED
 
@@ -176,6 +181,7 @@ class CollectStar extends Actor{
         this.dir = dir;
         this.speed = speed;
         this.decay = 600;
+        this.color = '#ff0000';
     }
     update(game){
         // DECAY
@@ -191,6 +197,7 @@ class CollectStar extends Actor{
             const p = game.player;
             if(colPolyCirc(p.colShapes[0], this.colShapes[0])){
                 this.clear = true;
+                p.glow(game, this.color);
                 // GET GAME MODE
                 game.score += 100;
             }

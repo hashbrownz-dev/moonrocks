@@ -172,6 +172,59 @@ class PartLine{
     }
 }
 
+class PartCirc{
+    constructor(x,y,r,duration,color = '#ffffff'){
+        this.x = x;
+        this.y = y;
+        this.r = r;
+        this.duration = duration;
+        this.decay = this.duration;
+        this.clear = false;
+        this.palette = getAlphaPalette(color);
+    }
+    update(){
+        this.decay--;
+        if(this.decay <= 0) this.clear = true;
+    }
+    draw(){
+        const r = 1 + (((1 - (this.decay / this.duration)) * this.r))
+        ctx.strokeStyle = updateColor(this,this.palette);
+        ctx.beginPath();
+        ctx.arc(this.x,this.y,r,0,7);
+        ctx.stroke();
+    }
+}
+
+class PartMask{
+    constructor(mask, x, y){
+        // this.mask = mask;
+        this.mask = { points : mask };
+        this.x = x;
+        this.y = y;
+        this.duration = 10;
+        this.decay = this.duration;
+        this.clear = false;
+        this.palette = getAlphaPalette('#ffffff');
+    }
+    update(){
+        this.decay--;
+        if(this.decay <= 0) this.clear = true;
+    }
+    draw(){
+        const s = 1 + ((1 - (this.decay / this.duration))*0.5);
+        ctx.save();
+        
+        scaleX(this.x,this.y,s);
+        scaleY(this.x,this.y,s);
+
+        ctx.strokeStyle = updateColor(this, this.palette);
+        drawPolygon(this.mask);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+}
+
 // MASK DESTRUCTURING
 
 const getMaskShape = (mask, x, y, dir) =>{
