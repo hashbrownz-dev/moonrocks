@@ -73,14 +73,8 @@ class Player extends Actor{
         // COLLISION CHECK
         game.actors.forEach( actor => {
             if(colPolyCirc(this.colShapes[0], actor.colShapes[0])){
-                // this.xSpeed *= -0.7;
-                // this.ySPeed *= -0.7;
-                // this.x = curPos.x;
-                // this.y = curPos.y;
-                // const modPos = this.getNewPos();
-                // this.x = modPos.x;
-                // this.y = modPos.y;
                 this.clear = true;
+                actor.hp = 0;
                 game.particles.push(setEffectMaskExplosion(this.sprite.mask,this.x,this.y,this.dir,this.sprite.palette[1]));
                 game.particles.push(setEffectPartExplosion(this.x,this.y));
             }

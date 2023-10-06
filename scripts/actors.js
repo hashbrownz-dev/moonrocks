@@ -103,7 +103,7 @@ class MoonRock extends Actor{
                 game.particles.push(setEffectBulletImpact(projectile.x, projectile.y, projectile.dir));
                 if(this.hp <= 0) {
                     this.clear = true;
-                    game.score+=this.points - 15;
+                    if(projectile.type !== 'ufo') game.score+=this.points - 15;
                     game.actors.push(new MoonRockMed(this), new MoonRockMed(this))
                     game.particles.push(setEffectMaskExplosion(this.sprite.mask,this.x,this.y,this.dir,this.sprite.palette[1]));
                     game.particles.push(setEffectPartExplosion(this.x,this.y));
@@ -158,7 +158,7 @@ class MoonRockMed extends Actor{
                 if(this.hp <= 0) {
                     this.clear = true;
                     game.actors.push(new MoonRockSmall(this), new MoonRockSmall(this));
-                    game.score += this.points - 10;
+                    if(projectile.type !== 'ufo') game.score += this.points - 10;
                     game.particles.push(setEffectMaskExplosion(this.sprite.mask,this.x,this.y,this.dir,this.sprite.palette[1]));
                     game.particles.push(setEffectPartExplosion(this.x,this.y));
                 }
@@ -208,7 +208,7 @@ class MoonRockSmall extends Actor{
                 game.particles.push(setEffectBulletImpact(projectile.x, projectile.y, projectile.dir));
                 if(this.hp <= 0) {
                     this.clear = true;
-                    game.score += this.points;
+                    if(projectile.type !== 'ufo') game.score += this.points;
                     game.collectibles.push(new CollectStar(this.x,this.y,this.trajectory,this.speed));
                     game.particles.push(setEffectMaskExplosion(this.sprite.mask,this.x,this.y,this.dir,this.sprite.palette[1]));
                     game.particles.push(setEffectPartExplosion(this.x,this.y));

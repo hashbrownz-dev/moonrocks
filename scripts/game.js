@@ -27,7 +27,7 @@ class Game {
         this.lives = 5;
         this.level = 1;
         this.player = new Player();
-        this.actors = MoonRock.spawn();
+        this.spawnMoonRocks();
         this.projectiles = [];
         this.collectibles = [];
         this.particles = [];
