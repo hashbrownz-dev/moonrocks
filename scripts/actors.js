@@ -82,6 +82,8 @@ class MoonRock extends Actor{
             game.actors.push(new MoonRockMed(this), new MoonRockMed(this))
             game.particles.push(setEffectMaskExplosion(this.sprite.mask,this.x,this.y,this.dir,this.sprite.palette[1]));
             game.particles.push(setEffectPartExplosion(this.x,this.y));
+            sfxRockExplode.currentTime = 0;
+            sfxRockExplode.play();
             return;
         }
         // ROTATE
@@ -101,6 +103,8 @@ class MoonRock extends Actor{
                 this.hp -= projectile.power;
                 if(projectile.type !== 'ufo') game.score+=5;
                 game.particles.push(setEffectBulletImpact(projectile.x, projectile.y, projectile.dir));
+                sfxBulletImpact.currentTime = 0;
+                sfxBulletImpact.play();
                 if(this.hp <= 0) {
                     this.clear = true;
                     console.log(projectile.type);
@@ -108,6 +112,8 @@ class MoonRock extends Actor{
                     game.actors.push(new MoonRockMed(this), new MoonRockMed(this))
                     game.particles.push(setEffectMaskExplosion(this.sprite.mask,this.x,this.y,this.dir,this.sprite.palette[1]));
                     game.particles.push(setEffectPartExplosion(this.x,this.y));
+                    sfxRockExplode.currentTime = 0;
+                    sfxRockExplode.play();
                 }
             }
         })
@@ -138,6 +144,8 @@ class MoonRockMed extends Actor{
             game.actors.push(new MoonRockSmall(this), new MoonRockSmall(this));
             game.particles.push(setEffectMaskExplosion(this.sprite.mask,this.x,this.y,this.dir,this.sprite.palette[1]));
             game.particles.push(setEffectPartExplosion(this.x,this.y));
+            sfxRockExplode.currentTime = 0;
+            sfxRockExplode.play();
             return;
         }
         // ROTATE
@@ -156,12 +164,16 @@ class MoonRockMed extends Actor{
                 this.hp -= projectile.power;
                 if(projectile.type !== 'ufo') game.score += 5;
                 game.particles.push(setEffectBulletImpact(projectile.x, projectile.y, projectile.dir));
+                sfxBulletImpact.currentTime = 0;
+                sfxBulletImpact.play();
                 if(this.hp <= 0) {
                     this.clear = true;
                     game.actors.push(new MoonRockSmall(this), new MoonRockSmall(this));
                     if(projectile.type !== 'ufo') game.score += this.points - 10;
                     game.particles.push(setEffectMaskExplosion(this.sprite.mask,this.x,this.y,this.dir,this.sprite.palette[1]));
                     game.particles.push(setEffectPartExplosion(this.x,this.y));
+                    sfxRockExplode.currentTime = 0;
+                    sfxRockExplode.play();
                 }
             }
         })
@@ -191,6 +203,8 @@ class MoonRockSmall extends Actor{
             this.clear = true;
             game.particles.push(setEffectMaskExplosion(this.sprite.mask,this.x,this.y,this.dir,this.sprite.palette[1]));
             game.particles.push(setEffectPartExplosion(this.x,this.y));
+            sfxRockExplode.currentTime = 0;
+            sfxRockExplode.play();
         }
         // ROTATE
         this.dir+=this.spinDir;
@@ -207,12 +221,16 @@ class MoonRockSmall extends Actor{
                 projectile.clear = true;
                 this.hp -= projectile.power;
                 game.particles.push(setEffectBulletImpact(projectile.x, projectile.y, projectile.dir));
+                sfxBulletImpact.currentTime = 0;
+                sfxBulletImpact.play();
                 if(this.hp <= 0) {
                     this.clear = true;
                     if(projectile.type !== 'ufo') game.score += this.points;
                     game.collectibles.push(new CollectStar(this.x,this.y,this.trajectory,this.speed));
                     game.particles.push(setEffectMaskExplosion(this.sprite.mask,this.x,this.y,this.dir,this.sprite.palette[1]));
                     game.particles.push(setEffectPartExplosion(this.x,this.y));
+                    sfxRockExplode.currentTime = 0;
+                    sfxRockExplode.play();
                 }
             }
         })
@@ -234,6 +252,7 @@ class UFO extends Actor {
         this.type = 'ufo';
         this.nearest = undefined;
         this.bankCheck = 60;
+        sfxUFOAppear.play();
     }
     getNearest(game){
         // GET THE NEAREST TARGET
@@ -298,6 +317,7 @@ class UFO extends Actor {
             if(this.nearest){
                 const dir = getDirection(this, this.nearest);
                 game.projectiles.push(new UFOShot(this.x,this.y,dir));
+                sfxUFOShoot.play();
             }
         }
 
@@ -308,6 +328,8 @@ class UFO extends Actor {
                 proj.clear = true;
                 this.hp -= proj.power;
                 game.particles.push(setEffectBulletImpact(proj.x,proj.y,proj.dir));
+                sfxBulletImpact.currentTime = 0;
+                sfxBulletImpact.play();
                 if(this.hp <= 0){
                     this.clear = true;
                     game.score += this.points;
@@ -315,6 +337,7 @@ class UFO extends Actor {
                     game.collectibles.push(new CollectStar(this.x,this.y,d,Math.abs(this.xSpeed)));
                     game.particles.push(setEffectMaskExplosion(this.sprite.mask,this.x,this.y,this.dir,this.sprite.palette[2]));
                     game.particles.push(setEffectPartExplosion(this.x,this.y));
+                    sfxUFOExplode.play();
                 }
             }
         })
@@ -326,6 +349,7 @@ class UFO extends Actor {
                 this.clear = true;
                 game.particles.push(setEffectMaskExplosion(this.sprite.mask,this.x,this.y,this.dir,this.sprite.palette[2]));
                 game.particles.push(setEffectPartExplosion(this.x,this.y));
+                sfxUFOExplode.play();
             }
         })
 

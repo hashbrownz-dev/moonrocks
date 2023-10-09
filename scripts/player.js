@@ -62,6 +62,9 @@ class Player extends Actor{
             // the angle is the current direction - 180...
             const { x, y } = getDestination(16, this.dir - 180);
             game.particles.push(setEffectThrust(x+this.x,y+this.y));
+            // Sound
+            if(sfxPlayerThrust.currentTime > 0.5)sfxPlayerThrust.currentTime = 0;
+            sfxPlayerThrust.play();
         } else {
             let diff = 0.01;
             if( _Keyboard['s'] || _Keyboard['l'] || TouchButtons[4].active ) diff = 0.05;
@@ -70,6 +73,9 @@ class Player extends Actor{
             if(this.xSpeed < 0) this.xSpeed += diff;
             if(this.ySpeed > 0) this.ySpeed -= diff;
             if(this.ySpeed < 0) this.ySpeed += diff;
+            // SOUND
+            sfxPlayerThrust.currentTime = 0;
+            sfxPlayerThrust.pause();
         }
 
         // UPDATE POS
@@ -86,6 +92,8 @@ class Player extends Actor{
                 actor.hp = 0;
                 game.particles.push(setEffectMaskExplosion(this.sprite.mask,this.x,this.y,this.dir,this.sprite.palette[1]));
                 game.particles.push(setEffectPartExplosion(this.x,this.y));
+                // Sound
+                sfxPlayerDeath.play();
             }
         })
         const projs = game.projectiles.filter( p => p.type === 'ufo' );
@@ -96,6 +104,7 @@ class Player extends Actor{
                     this.clear = true;
                     game.particles.push(setEffectMaskExplosion(this.sprite.mask,this.x,this.y,this.dir,this.sprite.palette[1]));
                     game.particles.push(setEffectPartExplosion(this.x,this.y));
+                    sfxPlayerDeath.play();
                 }
             })
         }
@@ -110,6 +119,9 @@ class Player extends Actor{
                 const offset = getDestination(12,this.dir);
                 game.projectiles.push(new PShot(this.x+offset.x,this.y+offset.y,this.dir));
                 this.shotCooldown = 10;
+                // SOUND
+                sfxPlayerShoot.currentTime = 0;
+                sfxPlayerShoot.play();
             }
         }
 
@@ -208,8 +220,9 @@ class CollectStar extends Actor{
             if(colPolyCirc(p.colShapes[0], this.colShapes[0])){
                 this.clear = true;
                 p.glow(game, this.color);
-                // GET GAME MODE
                 game.score += 100;
+                sfxGemCollect.currentTime = 0;
+                sfxGemCollect.play();
             }
         }
     }
